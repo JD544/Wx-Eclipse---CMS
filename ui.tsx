@@ -1026,7 +1026,7 @@ const AddPostForm = ({ onClose, categories }: {
       const title = formData.get('title') as string;    
       const excerpt = formData.get('excerpt') as string;
       const tags = formData.get('tags')?.toString().split(',') as string[];      
-      
+     
         setBlogPosts(blogPosts.map(blogPost => {
             if (blogPost.id === post.id) {
               return {
@@ -1158,12 +1158,6 @@ const AddPostForm = ({ onClose, categories }: {
           placeholder='Select a Status'
         />
         </div>
-        {post.featuredImage.length <= 100 &&
-        <div className="wx-auth-field">
-          <label className="wx-auth-label">Featured Image URL</label>
-          <input type="text" className="wx-auth-input" name="featuredImage" defaultValue={post.featuredImage} />
-        </div>
-        }
         
         <div className="wx-auth-modal-actions">
           <button type="button" className="wx-auth-button wx-auth-button-secondary" onClick={onClose}>

@@ -9,6 +9,7 @@ import { editor } from 'monaco-editor';
 import { Save } from 'lucide-react';
 import { useBuilder } from '../../../../func/hooks/useBuilder';
 import SimpleComments from './Comments';
+import { useIsEditor } from '../../../../func/hooks/useIsEditor';
 
 export const WxBlogComponent: BuilderComponent = {
     id: "WxBlog__blog__type1",
@@ -38,6 +39,8 @@ const SingleBlogPost = () => {
   const [ showRelated ] = useState(true);
   const [ editing, setEditing ] = useState(false);
   const [ editorValue, setEditorValue ] = useState('');
+
+  const isEditor = useIsEditor();
 
   const { getComponent, constructPageURL } = useBuilder();
 
@@ -98,7 +101,7 @@ const SingleBlogPost = () => {
    * @param html type of html to add (title, paragraph, image, quote, code, ul, video, divider)
    */
   const handleAddHtml = (html: string) => {
-    if (!editorRef.current) return;
+    if (!editorRef.current || !isEditor) return;
     const defaultClassName = 'wx-blog-element';
     if (html as string === 'title') {
       setEditorValue((prev => prev + `\n<h1 class="${defaultClassName}">Title</h1>`));
@@ -182,6 +185,7 @@ const SingleBlogPost = () => {
       .filter(post => post.category === blogPost?.category && post.slug !== blogPost.slug)
       .filter(post => post.status === 'published')
       .slice(0, 3);
+      
   return (
     blogPost && settings && blogPost.status === 'published' ? (
     <div className="wx-blog-container">
@@ -205,7 +209,7 @@ const SingleBlogPost = () => {
       </header>
 
       <div className="wx-blog-edit">
-      {import.meta.env.VITE_WX_EDITOR && <button className="wx-blog-edit-button"
+      {isEditor && <button className="wx-blog-edit-button"
           onClick={() => setEditing(!editing)}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-edit">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>

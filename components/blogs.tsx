@@ -30,17 +30,37 @@ const WxBlogs: React.FC<WxBlogsProps> = (props) => {
     const { getState } = useStorage();
     const { constructPageURL } = useBuilder();
 
-    const [blogs ] = React.useState<BlogPost[]>(getState("Blog")?.posts || []);
+    const [blogs, setBlogs ] = React.useState<BlogPost[]>(getState("Blog")?.posts || []);
     const [searchQuery, setSearchQuery] = React.useState<string>("");
     const [filteredBlogs, setFilteredBlogs] = React.useState<BlogPost[]>([]);
 
-    const [ categories ] = React.useState<BlogCategory[]>([
+    const [ categories, setCategorys ] = React.useState<BlogCategory[]>([
       {
         name: "All",
         slug: "all"
       },
       ...getState("Blog")?.categories || []
     ]);
+
+    useEffect(() => {
+      const blogState = getState("Blog");
+
+      const categories: BlogCategory[] = blogState?.categories || []
+      const blogs: BlogPost[] = blogState?.posts || [];
+
+      if (categories.length === 0 && blogs.length === 0) return;
+
+      setCategorys([
+        {
+          id: "all",
+          description: "All",
+          name: "All",
+          slug: "all"
+        },
+        ...categories
+      ]);      
+      setBlogs(blogs);
+    }, [getState]);
 
     const [ category, setCategory] = React.useState<string>(props.settings[0]?.value || categories[0]?.name || "All");
 
@@ -201,7 +221,7 @@ const WxBlogs: React.FC<WxBlogsProps> = (props) => {
             ))}    
         </div>
         {blogs.length === 0 && <EmptyState />}
-        {filteredBlogs.length === 0 && <SearchEmpty />}
+        {filteredBlogs.length === 0 && blogs.length > 0 && <SearchEmpty />}
       </div>
     
      );
